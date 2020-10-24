@@ -1,8 +1,10 @@
-DROP TABLE IF EXISTS employee;
+DROP DATABASE IF EXISTS employeeTrackerDB;
 
 CREATE DATABASE employeeTrackerDB;
 
-USE employeeTrackerDB
+USE employeeTrackerDB;
+
+DROP TABLE IF EXISTS employee;
 
 CREATE TABLE employee (
   id INTEGER PRIMARY KEY,
