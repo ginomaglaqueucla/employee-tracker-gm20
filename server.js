@@ -20,7 +20,7 @@ connection.connect(err => {
 schemaDB = () => {
   console.log('Establishing Database....\n');
   const query = connection.query(
-    'SELECT * FROM employee',
+    'SELECT * FROM role',
     function(err, res) {
       if (err) throw err;
       console.log(res);
@@ -28,31 +28,6 @@ schemaDB = () => {
     }
   );
 };
-
-// seedsDB = () => {
-//   console.log('Loading Database....\n');
-//   const query = connection.query(
-//     'source db/seeds.sql;',
-//     function(err, res) {
-//       if (err) throw err;
-//       console.log('seeds successful!\n');
-//       displayDB();
-//     }
-//   );
-//   // logs the actual query being run
-//   console.log(query.sql);
-// };
-
-// displayDB = () => {
-//   const query = connection.query(
-//     'SELECT * FROM employee',
-//     function(err, res) {
-//       if (err) throw err;
-//     }
-//   );
-//   // logs the actual query being run
-//   console.log(query.sql);
-// };
 
 // const db = require('./db/database');
 
