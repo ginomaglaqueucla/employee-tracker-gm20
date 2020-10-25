@@ -1,8 +1,8 @@
 const inquirer = require('inquirer');
 const connection = require('./db/database');
 
-const readDepartments = require('./queries/departmentQuery');
-const createDepartment = require('./queries/departmentQuery');
+const {readDepartments, createDepartment} = require('./queries/departmentQuery');
+const {readRoles, createRole} = require('./queries/roleQuery');
 const { readEmployees, createEmployee, updateEmployee, deleteEmployee}  = require('./queries/employeeQuery');
 // const createEmployee = require('./queries/employeeQuery');
 // const updateEmployee = require('./queries/employeeQuery');
@@ -41,7 +41,7 @@ const initialize = () => {
             return createDepartment();
         }
         else if (userInput.action === "Add A Role"){
-            return createRole;
+            return createRole();
         }
         else if (userInput.action === "Add An Employee"){
             return createEmployee();

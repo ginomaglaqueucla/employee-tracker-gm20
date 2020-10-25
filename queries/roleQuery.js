@@ -1,6 +1,6 @@
 const connection = require('../db/database');
 
-const readDepartments = () => {
+const readRoles = () => {
     // const sql = `SELECT * FROM department`
 
     // // display the information then reprompt the user with the questions
@@ -10,10 +10,10 @@ const readDepartments = () => {
     //         console.table(rows);
     //     })
     //     .then(() => startApplication());
-    console.log('in dep');
+    console.log('in role');
 };
 
-const createDepartment = () => {
+const createRole = () => {
     // const sql = `SELECT * FROM department`
 
     // // display the information then reprompt the user with the questions
@@ -23,10 +23,10 @@ const createDepartment = () => {
     //         console.table(rows);
     //     })
     //     .then(() => startApplication());
-    console.log('create dep');
+    console.log('create role');
 };
 
 module.exports = {
-    readDepartments,
-    createDepartment
+    readRoles,
+    createRole
 }
