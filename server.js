@@ -1,33 +1,7 @@
-// get the client
-const mysql = require('mysql2');
 const express = require('express');
+const connection = require('./db/database');
+const initialize = require('./index');
 
-// create the connection to database
-const connection = mysql.createConnection({
-  host: 'localhost',
-  port: 3306,
-  user: 'root',
-  password: 'ginMAN202036$',
-  database: 'employeeTrackerDB'
-});
-
-connection.connect(err => {
-  if (err) throw err;
-  console.log('connected as id ' + connection.threadId + '\n');
-  schemaDB();
-});
-
-schemaDB = () => {
-  console.log('Establishing Database....\n');
-  const query = connection.query(
-    'SELECT * FROM role',
-    function(err, res) {
-      if (err) throw err;
-      console.log(res);
-      // seedsDB();
-    }
-  );
-};
 
 // const db = require('./db/database');
 
@@ -44,9 +18,19 @@ app.use(express.json());
 app.use('/api', apiRoutes);
 
 // Default response for any other request (Not Found)
-app.use((req, res) => {
+app.use((req, res) => {s
   res.status(404).end();
 });
+
+// Start server after DB connection
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+  initialize();
+});
+
+
+
 
 // Start server after DB connection
 // db.on('open', () => {
