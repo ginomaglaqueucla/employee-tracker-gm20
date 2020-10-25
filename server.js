@@ -1,6 +1,6 @@
 const express = require('express');
 const connection = require('./db/database');
-const initialize = require('./index');
+const initialize = require('./queries/index');
 
 
 // const db = require('./db/database');
@@ -26,7 +26,9 @@ app.use((req, res) => {s
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
+  let finishedFlag = false;
   initialize();
+  
 });
 
 
