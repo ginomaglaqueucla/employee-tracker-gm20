@@ -15,7 +15,6 @@ app.use((req, res) => {s
 });
 
 // Start server after DB connection
-
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   console.log("----- Welcome To Employee Tracker -----");

@@ -3,7 +3,7 @@ const connection = require('../db/database');
 const cTable = require('console.table');
 
 const initialize = () => {
-    
+    // user message prompts
     let actionArray = [
         'View All Departments', 
         'View All Roles',
@@ -11,8 +11,7 @@ const initialize = () => {
         'Add A Department', 
         'Add A Role', 
         'Add An Employee', 
-        'Update An Employee Role', 
-        'Remove An Employee'
+        'Update An Employee Role'
     ];
     inquirer.prompt([
         {
@@ -21,7 +20,9 @@ const initialize = () => {
             message: 'What would you like to do?',
             choices: actionArray,
         }
-    ]).then((userInput) => {
+    ])
+    // call function depending on user selection
+    .then((userInput) => {
         if(userInput.action === "View All Departments"){
             return readDepartments();
         }
@@ -41,22 +42,27 @@ const initialize = () => {
             return createEmployee();
         }
         else if (userInput.action === "Update An Employee Role"){
-            return updateEmployee();
+            return updateEmployeeRole();
         }
     })
 };
 
+// View All Departments
 const readDepartments = () => {
+    // sql query
     const sql = `SELECT name FROM department`;
 
     connection.promise().query(sql)
         .then(([rows]) => {
             console.table(rows);
         })
+        // recall user prompts
         .then( () => initialize());
 };
 
+// View All Roles
 const readRoles = () => {
+    // sql query
     const sql = `SELECT title, salary, department.name AS department FROM role
     LEFT JOIN department ON role.department_id = department.id`;
 
@@ -64,10 +70,13 @@ const readRoles = () => {
         .then(([rows]) => {
             console.table(rows);
         })
+        // recall user prompts
         .then( () => initialize());
 };
 
+// View All Employees
 const readEmployees = () => {
+    // sql query
     const sql = `SELECT employee.id, employee.first_name, employee.last_name, title, department.name AS department, salary,
     CONCAT(manager.first_name, ' ', manager.last_name) AS manager_name FROM role
         RIGHT JOIN employee ON employee.role_id = role.id
@@ -78,9 +87,11 @@ const readEmployees = () => {
         .then(([rows]) => {
             console.table(rows);
         })
+        // recall user prompts
         .then( () => initialize());
 };
 
+// Add A Department
 const createDepartment = () => {
     inquirer.prompt([
         {
@@ -90,6 +101,7 @@ const createDepartment = () => {
         }
     ])
     .then(userInput => {
+        // sql query
         const sql = `INSERT INTO department SET name=?`
 
         connection.promise().query(sql, userInput.depName)
@@ -97,7 +109,9 @@ const createDepartment = () => {
     });
 };
 
+// Add A Role
 const createRole = () => {
+    // sql query
     const sql = `SELECT * FROM department`;
     connection.promise().query(sql)
         .then(([rows]) => {
@@ -130,13 +144,16 @@ const createRole = () => {
         })
 };
 
+// Add An Employee
 const createEmployee = () => {
+    // sql query
     let sql = `SELECT * FROM role`;
     connection.promise().query(sql)
         .then(([rows]) => {
             let roleArray = [];
             rows.forEach(element => roleArray.push({name: element.title, value: element.id}));
 
+            // sql query
             sql = `SELECT * FROM employee`;
             connection.promise().query(sql)
                 .then(([rows]) => {
@@ -168,6 +185,7 @@ const createEmployee = () => {
                     }
                 ])
                 .then(userInput => {
+                    // sql query
                     let sql = `INSERT INTO employee SET ?`;
 
                     connection.promise().query(sql, userInput)
@@ -177,16 +195,17 @@ const createEmployee = () => {
     })
 };
 
-const updateEmployee = () => {
+// Update An Employee Role
+const updateEmployeeRole = () => {
+    // sql query
     let sql = `SELECT * FROM employee`;
 
     connection.promise().query(sql)
         .then(([rows, fields]) => {
-            // const employeeArray = rows.map(data =>
-            //     ({name: data.last_name, value: data.id}));
             let employeeArray = [];
             rows.forEach(element => employeeArray.push({name: element.first_name+' '+element.last_name, value: element.id}));
 
+            // sql query
             sql = `SELECT * FROM role`;
 
             connection.promise().query(sql)
@@ -208,6 +227,7 @@ const updateEmployee = () => {
                     }
                 ])
                 .then(userInput => {
+                    // sql query
                     const sql = `UPDATE employee SET role_id = ? WHERE id = ?`;
                     const params = [userInput.role_id, userInput.id];
 
