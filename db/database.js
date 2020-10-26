@@ -6,7 +6,7 @@ const connection = mysql.createConnection({
     host: 'localhost',
     // port: 3306,
     user: 'root',
-    password: 'ginMAN202036$',
+    password: 'UCLABootCamp',
     database: 'employeeTrackerDB'
 });
 connection.connect(err => {
@@ -14,4 +14,3 @@ connection.connect(err => {
 });
 
 module.exports = connection;
-

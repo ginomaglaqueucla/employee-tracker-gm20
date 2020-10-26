@@ -1,11 +1,9 @@
 const inquirer = require('inquirer');
 const connection = require('../db/database');
+const cTable = require('console.table');
 
 const initialize = () => {
-    let finsihedFlag = false;
-    let promise;
-    let testArray = [];
-    console.log("in here");
+    
     let actionArray = [
         'View All Departments', 
         'View All Roles',
@@ -43,12 +41,7 @@ const initialize = () => {
             return createEmployee();
         }
         else if (userInput.action === "Update An Employee Role"){
-            console.log('egw');
-            console.log(userInput.action)
             return updateEmployee();
-        }
-        else if (userInput.action === "Remove An Employee"){
-            return deleteEmployee();
         }
     })
 };
@@ -57,7 +50,7 @@ const readDepartments = () => {
     const sql = `SELECT name FROM department`;
 
     connection.promise().query(sql)
-        .then(([rows, fields]) => {
+        .then(([rows]) => {
             console.table(rows);
         })
         .then( () => initialize());
@@ -68,7 +61,7 @@ const readRoles = () => {
     LEFT JOIN department ON role.department_id = department.id`;
 
     connection.promise().query(sql)
-        .then(([rows, fields]) => {
+        .then(([rows]) => {
             console.table(rows);
         })
         .then( () => initialize());
@@ -82,7 +75,7 @@ const readEmployees = () => {
         LEFT JOIN employee AS manager ON employee.manager_id = manager.id`;
 
     connection.promise().query(sql)
-        .then(([rows, fields]) => {
+        .then(([rows]) => {
             console.table(rows);
         })
         .then( () => initialize());
@@ -107,7 +100,7 @@ const createDepartment = () => {
 const createRole = () => {
     const sql = `SELECT * FROM department`;
     connection.promise().query(sql)
-        .then(([rows, fields]) => {
+        .then(([rows]) => {
             let departmentArray = [];
             rows.forEach(element => departmentArray.push({name: element.name, value: element.id}));
             inquirer.prompt([
@@ -140,16 +133,15 @@ const createRole = () => {
 const createEmployee = () => {
     let sql = `SELECT * FROM role`;
     connection.promise().query(sql)
-        .then(([rows, fields]) => {
-            const roleArray = rows.map(data =>
-                ({name: data.title, value: data.id}));
-            console.log(roleArray);
+        .then(([rows]) => {
+            let roleArray = [];
+            rows.forEach(element => roleArray.push({name: element.title, value: element.id}));
 
             sql = `SELECT * FROM employee`;
             connection.promise().query(sql)
-                .then(([rows, fields]) => {
-                    const managerArray = rows.map(data =>
-                        ({name: data.last_name, value: data.id}));
+                .then(([rows]) => {
+                    let managerArray = [];
+                    rows.forEach(element => managerArray.push({name: element.first_name+' '+element.last_name, value: element.id}));
 
                 inquirer.prompt([
                     {
@@ -190,8 +182,10 @@ const updateEmployee = () => {
 
     connection.promise().query(sql)
         .then(([rows, fields]) => {
-            const employeeArray = rows.map(data =>
-                ({name: data.last_name, value: data.id}));
+            // const employeeArray = rows.map(data =>
+            //     ({name: data.last_name, value: data.id}));
+            let employeeArray = [];
+            rows.forEach(element => employeeArray.push({name: element.first_name+' '+element.last_name, value: element.id}));
 
             sql = `SELECT * FROM role`;
 
@@ -223,6 +217,5 @@ const updateEmployee = () => {
         })
     })
 };
-
 
 module.exports = initialize;

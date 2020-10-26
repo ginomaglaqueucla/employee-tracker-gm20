@@ -18,7 +18,6 @@ app.use((req, res) => {s
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
-  let finishedFlag = false;
+  console.log("----- Welcome To Employee Tracker -----");
   initialize();
-  
 });
