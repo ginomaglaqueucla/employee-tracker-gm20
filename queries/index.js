@@ -3,7 +3,7 @@ const connection = require('../db/database');
 
 // const {readDepartments, createDepartment} = require('./departmentQuery');
 // const {readRoles, createRole} = require('./roleQuery');
-const {updateEmployee, deleteEmployee}  = require('./employeeQuery');
+const {deleteEmployee}  = require('./employeeQuery');
 // const { readEmployees, createEmployee, updateEmployee, deleteEmployee}  = require('./employeeQuery');
 
 
@@ -201,6 +201,44 @@ const createEmployee = () => {
         })
     })
 };
+
+const updateEmployee = () => {
+    let sql = `SELECT * FROM employee`
+    connection.promise().query(sql)
+        .then(([rows, fields]) => {
+            const employeeArray = rows.map(data =>
+                ({name: data.last_name, value: data.id}));
+
+            sql = `SELECT * FROM role`
+            connection.promise().query(sql)
+                .then(([rows, fields]) => {
+                    const rolesArray = rows.map(data =>
+                        ({name: data.title, value: data.id}));
+                inquirer.prompt([
+                    {
+                        type: 'list',
+                        name: 'id',
+                        message: 'Choose Employee:',
+                        choices: employeeArray
+                    },
+                    { 
+                        type: 'list',
+                        name: 'role_id',
+                        message: 'Choose Role:',
+                        choices: rolesArray
+                    }
+                ])
+                .then(userInput => {
+                    const sql = `UPDATE employee SET role_id = ? WHERE id = ?`
+                    const params = [userInput.role_id, userInput.id];
+                    // display the information then reprompt the user with the questions
+                    connection.promise().query(sql, params)
+                    .then( () => readEmployees() );
+                })
+        })
+    })
+};
+
 
 
 
