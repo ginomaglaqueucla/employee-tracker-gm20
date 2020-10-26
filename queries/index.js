@@ -75,7 +75,8 @@ const readDepartments = () => {
 };
 
 const readRoles = () => {
-    const sql = `SELECT * FROM role`
+    const sql = `SELECT title, salary, department.name AS department FROM role
+    LEFT JOIN department ON role.department_id = department.id`
 
     connection.promise().query(sql)
         .then(([rows, fields]) => {
@@ -86,7 +87,11 @@ const readRoles = () => {
 };
 
 const readEmployees = () => {
-    const sql = `SELECT * FROM employee`
+    const sql = `SELECT employee.id, employee.first_name, employee.last_name, title, department.name AS department, salary,
+    CONCAT(manager.first_name, ' ', manager.last_name) AS manager_name FROM role
+        RIGHT JOIN employee ON employee.role_id = role.id
+        LEFT JOIN department ON role.department_id = department.id
+        LEFT JOIN employee AS manager ON employee.manager_id = manager.id`
 
     connection.promise().query(sql)
         .then(([rows, fields]) => {
