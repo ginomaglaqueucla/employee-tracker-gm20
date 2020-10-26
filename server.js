@@ -2,20 +2,12 @@ const express = require('express');
 const connection = require('./db/database');
 const initialize = require('./queries/index');
 
-
-// const db = require('./db/database');
-
 const PORT = process.env.PORT || 3001;
 const app = express();
-
-const apiRoutes = require('./routes/apiRoutes');
 
 // Express middleware
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
-
-// Use apiRoutes
-app.use('/api', apiRoutes);
 
 // Default response for any other request (Not Found)
 app.use((req, res) => {s
@@ -30,13 +22,3 @@ app.listen(PORT, () => {
   initialize();
   
 });
-
-
-
-
-// Start server after DB connection
-// db.on('open', () => {
-//   app.listen(PORT, () => {
-//     console.log(`Server running on port ${PORT}`);
-//   });
-// });

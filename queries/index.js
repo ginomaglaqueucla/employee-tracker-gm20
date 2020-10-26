@@ -1,12 +1,6 @@
 const inquirer = require('inquirer');
 const connection = require('../db/database');
 
-// const {readDepartments, createDepartment} = require('./departmentQuery');
-// const {readRoles, createRole} = require('./roleQuery');
-const {deleteEmployee}  = require('./employeeQuery');
-// const { readEmployees, createEmployee, updateEmployee, deleteEmployee}  = require('./employeeQuery');
-
-
 const initialize = () => {
     let finsihedFlag = false;
     let promise;
@@ -57,31 +51,25 @@ const initialize = () => {
             return deleteEmployee();
         }
     })
-    // .then(() => initialize());
-    // promise.then(;
 };
 
 const readDepartments = () => {
-
-    const sql = `SELECT name FROM department`
+    const sql = `SELECT name FROM department`;
 
     connection.promise().query(sql)
         .then(([rows, fields]) => {
             console.table(rows);
-            // return rows;
-            // connection.end();
         })
         .then( () => initialize());
 };
 
 const readRoles = () => {
     const sql = `SELECT title, salary, department.name AS department FROM role
-    LEFT JOIN department ON role.department_id = department.id`
+    LEFT JOIN department ON role.department_id = department.id`;
 
     connection.promise().query(sql)
         .then(([rows, fields]) => {
             console.table(rows);
-            // connection.end();
         })
         .then( () => initialize());
 };
@@ -91,12 +79,11 @@ const readEmployees = () => {
     CONCAT(manager.first_name, ' ', manager.last_name) AS manager_name FROM role
         RIGHT JOIN employee ON employee.role_id = role.id
         LEFT JOIN department ON role.department_id = department.id
-        LEFT JOIN employee AS manager ON employee.manager_id = manager.id`
+        LEFT JOIN employee AS manager ON employee.manager_id = manager.id`;
 
     connection.promise().query(sql)
         .then(([rows, fields]) => {
             console.table(rows);
-            // connection.end();
         })
         .then( () => initialize());
 };
@@ -112,25 +99,17 @@ const createDepartment = () => {
     .then(userInput => {
         const sql = `INSERT INTO department SET name=?`
 
-        // display the information then reprompt the user with the questions
         connection.promise().query(sql, userInput.depName)
-            .then(([rows]) => {
-                console.log('\n');
-                console.table(rows);
-            })
-            .then( () => readDepartments() );
+        .then( () => readDepartments() );
     });
 };
-// const createRole = () => {
-//     return;
-// };
+
 const createRole = () => {
-    const sql = `SELECT * FROM department`
+    const sql = `SELECT * FROM department`;
     connection.promise().query(sql)
         .then(([rows, fields]) => {
-            const departmentArray = rows.map(data =>
-                ({name: data.name, value: data.id})); 
-            console.log(departmentArray);
+            let departmentArray = [];
+            rows.forEach(element => departmentArray.push({name: element.name, value: element.id}));
             inquirer.prompt([
                 {
                     type: 'input',
@@ -150,8 +129,8 @@ const createRole = () => {
                 }
             ])
             .then(userInput => {
-                let sql = `INSERT INTO role SET ?`
-                // display the information then reprompt the user with the questions
+                let sql = `INSERT INTO role SET ?`;
+
                 connection.promise().query(sql, userInput)
                 .then( () => readRoles() );
             })
@@ -159,19 +138,18 @@ const createRole = () => {
 };
 
 const createEmployee = () => {
-    let sql = `SELECT * FROM role`
+    let sql = `SELECT * FROM role`;
     connection.promise().query(sql)
         .then(([rows, fields]) => {
             const roleArray = rows.map(data =>
                 ({name: data.title, value: data.id}));
             console.log(roleArray);
 
-            sql = `SELECT * FROM employee`
+            sql = `SELECT * FROM employee`;
             connection.promise().query(sql)
                 .then(([rows, fields]) => {
                     const managerArray = rows.map(data =>
                         ({name: data.last_name, value: data.id}));
-                    console.log(managerArray);
 
                 inquirer.prompt([
                     {
@@ -198,8 +176,8 @@ const createEmployee = () => {
                     }
                 ])
                 .then(userInput => {
-                    let sql = `INSERT INTO employee SET ?`
-                    // display the information then reprompt the user with the questions
+                    let sql = `INSERT INTO employee SET ?`;
+
                     connection.promise().query(sql, userInput)
                     .then( () => readEmployees() );
                 })
@@ -208,13 +186,15 @@ const createEmployee = () => {
 };
 
 const updateEmployee = () => {
-    let sql = `SELECT * FROM employee`
+    let sql = `SELECT * FROM employee`;
+
     connection.promise().query(sql)
         .then(([rows, fields]) => {
             const employeeArray = rows.map(data =>
                 ({name: data.last_name, value: data.id}));
 
-            sql = `SELECT * FROM role`
+            sql = `SELECT * FROM role`;
+
             connection.promise().query(sql)
                 .then(([rows, fields]) => {
                     const rolesArray = rows.map(data =>
@@ -234,18 +214,15 @@ const updateEmployee = () => {
                     }
                 ])
                 .then(userInput => {
-                    const sql = `UPDATE employee SET role_id = ? WHERE id = ?`
+                    const sql = `UPDATE employee SET role_id = ? WHERE id = ?`;
                     const params = [userInput.role_id, userInput.id];
-                    // display the information then reprompt the user with the questions
+
                     connection.promise().query(sql, params)
                     .then( () => readEmployees() );
                 })
         })
     })
 };
-
-
-
 
 
 module.exports = initialize;
